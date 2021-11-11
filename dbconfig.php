@@ -2,6 +2,7 @@
 @session_start();
 header('Content-Type: text/html; charset=iso-8859-1');
 
+//Change HOST, DBNAME (database name), USERNAME (database username), PASS (password), PORTNUMBER according to your server configuration
 define("HOST","localhost");
 define("DBNAME","expinc");
 define("USERNAME","encourageindia");
