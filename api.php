@@ -1,4 +1,5 @@
 <?php
+
 include_once "dbconfig.php";
 
 Class USERAPI
@@ -44,7 +45,7 @@ Class USERAPI
                             </head> 
                             <body> 
                                 <h1>You can create your account by clicking on below link.</h1> 
-                                <a href="http://appapis.iamstmartin.com/expinc/laravalapi/signup?em'.base64_encode($emailid).'">http://appapis.iamstmartin.com/expinc/laravalapi/signup.html?em'.base64_encode($emailid).'</a>
+                                <a href="http://appapis.iamstmartin.com/expinc/laravalapi/signup?em'.base64_encode($emailid).'">http://appapis.iamstmartin.com/expinc/laravalapi/signup?em'.base64_encode($emailid).'</a>
                             </body> 
                             </html>'; 
                          
@@ -58,10 +59,10 @@ Class USERAPI
                         // Send email 
                         if(mail($emailid, $subject, $htmlContent, $headers)){ 
                             $this->returnarray['replyCode']="success";
-                            $this->returnarray['replyCode']="Email has sent successfully."; 
+                            $this->returnarray['replyMsg']="Email has sent successfully."; 
                         }else{ 
                             $this->returnarray['replyCode']="error";
-                            $this->returnarray['replyCode']="Email sending failed."; 
+                            $this->returnarray['replyMsg']="Email sending failed."; 
                         }
                         echo json_encode($this->returnarray);
                     }
@@ -82,7 +83,7 @@ Class USERAPI
                         if(!(strlen($username)>=4 && strlen($username)<=20))
                         {
                             $this->returnarray['replyCode']="error";
-                            $this->returnarray['replyCode']="User name should contain minimum 4 characters and maximum 20 characters.";
+                            $this->returnarray['replyMsg']="User name should contain minimum 4 characters and maximum 20 characters.";
                         }
                         else
                         {
@@ -92,7 +93,7 @@ Class USERAPI
                             if(count($records)>0)
                             {
                                 $this->returnarray['replyCode']="error";
-                                $this->returnarray['replyCode']="User already exists with same username or email id.";
+                                $this->returnarray['replyMsg']="User already exists with same username or email id.";
                             }
                             else
                             {
@@ -138,17 +139,17 @@ Class USERAPI
                                     // Send email 
                                     if(mail($emailid, $subject, $htmlContent, $headers)){ 
                                         $this->returnarray['replyCode']="success";
-                                        $this->returnarray['replyCode']="Confirmation Email has been sent successfully. Please verify account by clicking on verification link in email."; 
+                                        $this->returnarray['replyMsg']="Confirmation Email has been sent successfully. Please verify account by clicking on verification link in email."; 
                                     }else{ 
                                         $dbobj->deleteData("apiusers",array("id"=>$lastuserid));
                                         $this->returnarray['replyCode']="error";
-                                        $this->returnarray['replyCode']="There is an issue in signup. Please try again later.";
+                                        $this->returnarray['replyMsg']="There is an issue in signup. Please try again later.";
                                     }
                                 }
                                 else
                                 {
                                     $this->returnarray['replyCode']="error";
-                                    $this->returnarray['replyCode']="There is an issue in sign up. Please contact to administrator.";
+                                    $this->returnarray['replyMsg']="There is an issue in sign up. Please contact to administrator.";
                                 }
                             }
                         }
@@ -265,7 +266,7 @@ Class USERAPI
                         $dbobj=new DB(DBNAME,HOST,USERNAME,PASS,TYPE,PORTNUMBER);
                         $dbobj->connect();
                         
-                        $userdetail=$dbobj->fetch_array_query("SELECT * FROM users where id=:uid",array(":uid"=>$userid));
+                        $userdetail=$dbobj->fetch_array_query("SELECT * FROM apiusers where id=:uid",array(":uid"=>$userid));
                        
                         if(count($userdetail)==0)
                         {
@@ -304,7 +305,7 @@ Class USERAPI
                                 // Check if file already exists
                                 if (file_exists($target_file)) {
                                     unlink($target_file);
-                                    $temp = explode(".", $filearr["name"]);
+                                    $temp = explode(".", $_FILES['file']["name"]);
                                     $target_file = $dirname.$userid.'.'. end($temp);
                                 }
                                 $sourceProperties = getimagesize($_FILES['file']['tmp_name']);
@@ -321,7 +322,7 @@ Class USERAPI
                                 }
                                 // Check if $uploadOk is set to 0 by an error
                                 if ($uploadOk == 1) {
-                                    $msg=move_uploaded_file($filearr["tmp_name"], $target_file);
+                                    $msg=move_uploaded_file($_FILES['file']["tmp_name"], $target_file);
                                     if ($msg) {
                                         $msg="Profile updated successfully.";
                                         $msgtype='success';
